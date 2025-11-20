@@ -2,7 +2,7 @@
 
 source "$(dirname "$0")/common.sh"
 
-get_ide_selection "$1" "No IDE specified. Please select one:"
+get_ide_selection "Select an IDE to install:"
 
 echo -e "${GREEN}Selected IDE: $IDE${NC}"
 echo ""

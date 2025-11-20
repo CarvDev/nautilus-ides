@@ -22,38 +22,19 @@ This repository is based on the excellent work from [code-nautilus](https://gith
 
 ## 🛠️ Installation
 
-To install the extension for your preferred IDE, run the corresponding command:
+Run the following command and select your IDE from the menu:
 
-### Antigravity
 ```bash
-wget -qO- https://raw.githubusercontent.com/RodrigoSaka/nautilus-ides/main/install.sh | bash -s -- antigravity
-```
-
-### VS Code
-```bash
-wget -qO- https://raw.githubusercontent.com/RodrigoSaka/nautilus-ides/main/install.sh | bash -s -- code
-```
-
-### Cursor
-```bash
-wget -qO- https://raw.githubusercontent.com/RodrigoSaka/nautilus-ides/main/install.sh | bash -s -- cursor
-```
-
-### Windsurf
-```bash
-wget -qO- https://raw.githubusercontent.com/RodrigoSaka/nautilus-ides/main/install.sh | bash -s -- windsurf
+wget -qO- https://raw.githubusercontent.com/RodrigoSaka/nautilus-ides/main/install.sh | bash
 ```
 
 ## 🗑️ Uninstallation
 
-To uninstall, remove the specific script file and restart Nautilus.
+To uninstall, run the following command and select the IDE to remove:
 
-Example for Windsurf:
 ```bash
-rm -f ~/.local/share/nautilus-python/extensions/windsurf-nautilus.py
-nautilus -q
+wget -qO- https://raw.githubusercontent.com/RodrigoSaka/nautilus-ides/main/uninstall.sh | bash
 ```
-(Replace `windsurf-nautilus.py` with `antigravity-nautilus.py`, `code-nautilus.py`, or `cursor-nautilus.py` as needed)
 
 ## 📦 Requirements
 

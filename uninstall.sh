@@ -2,7 +2,7 @@
 
 source "$(dirname "$0")/common.sh"
 
-get_ide_selection "$1" "No IDE specified. Please select one to uninstall:"
+get_ide_selection "Select an IDE to uninstall:"
 
 echo -e "${GREEN}Selected IDE to uninstall: $IDE${NC}"
 echo ""
