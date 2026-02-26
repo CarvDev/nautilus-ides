@@ -24,7 +24,7 @@ echo -e "${BLUE}Downloading newest version for $IDE...${NC}"
 if wget -q -O /tmp/$SCRIPT_NAME https://raw.githubusercontent.com/RodrigoSaka/nautilus-ides/main/scripts/ide-nautilus-template.py ; then
     echo -e "${GREEN}Download completed successfully.${NC}"
 else
-    echo -e "${RED}Download failed.${NC}"
+    echo -e "${RED}Download failed.${NC}" >&2
     exit 1
 fi
 echo ""

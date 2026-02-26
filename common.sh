@@ -10,15 +10,15 @@ NC='\033[0m' # No Color
 # Verify if the user is root
 check_root() {
     if [ $UID -eq 0 ]; then
-        echo -e "${RED}Error: do not run this script as root${NC}"
+        echo -e "${RED}Error: do not run this script as root${NC}" >&2
         exit 1
     fi
 }
 
 # Verify python-nautilus instalation
 check_python_nautilus() {
-    if !(python3 -c "import gi; from gi.repository import Nautilus" 2> /dev/null) ; then
-        echo -e "${RED}Error: python-nautilus is not installed${NC}"
+    if ! python3 -c "import gi; from gi.repository import Nautilus" 2> /dev/null ; then
+        echo -e "${RED}Error: python-nautilus is not installed${NC}" >&2
         exit 1
     fi
 }
