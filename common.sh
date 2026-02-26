@@ -66,7 +66,7 @@ get_ide_setup () {
     local answer
 
     if [ "$CUSTOM_IDE" = "1" ]; then
-        read -p "Does your IDE has a [new-window] argument?: [y/n]" answer
+        read -p "Does your IDE have a [new-window] argument? [y/n]: " answer
         answer="${answer^}"
         
         if [ "$answer" = "Y" ]; then
