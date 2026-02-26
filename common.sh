@@ -15,6 +15,14 @@ check_root() {
     fi
 }
 
+# Verify python-nautilus instalation
+check_python_nautilus() {
+    if !(python3 -c "import gi; from gi.repository import Nautilus" 2> /dev/null) ; then
+        echo -e "${RED}Error: python-nautilus is not installed${NC}"
+        exit 1
+    fi
+}
+
 # Interactive selection
 get_ide_selection () {
     local prompt_msg=$1
@@ -31,7 +39,7 @@ get_ide_selection () {
         2) IDE="code" ;;
         3) IDE="cursor" ;;
         4) IDE="windsurf" ;;
-        5) read -p "Enter IDE command (e.g. nvim for Neovim): " IDE ;;
+        5) read -p "Enter IDE command (e.g. nvim for Neovim): " IDE && CUSTOM_IDE=1;;
         *) echo -e "${RED}Invalid choice.${NC}"; exit 1 ;;
     esac
 
@@ -51,3 +59,30 @@ get_ide_name () {
         IDE_NAME="$ide_custom_name"
     fi
 }
+
+get_ide_setup () {
+    NEW_WINDOW_ARG="--new-window "
+    ALWAYS_OPEN_NEW_WINDOW=0
+    local answer
+
+    if [ "$CUSTOM_IDE" = "1" ]; then
+        read -p "Does your IDE has a [new-window] argument?: [y/n]" answer
+        answer="${answer^}"
+        
+        if [ "$answer" = "Y" ]; then
+            read -p "Enter the [new-window] argument of your IDE (e.g. --new-window): " answer
+            NEW_WINDOW_ARG="$answer "
+        else
+            NEW_WINDOW_ARG=""
+            return 0
+        fi
+    fi
+    
+
+    read -p "Do you want your IDE to always open files or folders in a new window? [y/n]: " answer
+    answer="${answer^}"
+    if [ "$answer" = "Y" ]; then
+        ALWAYS_OPEN_NEW_WINDOW=1
+    fi
+}
+

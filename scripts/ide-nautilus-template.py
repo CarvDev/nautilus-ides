@@ -9,14 +9,21 @@ from gi.repository import Nautilus, GObject
 from subprocess import call
 import os
 
-# path to ide
+# path to ide (string)
 IDE_COMMAND = '__IDE_COMMAND__'
 
-# what name do you want to see in the context menu?
+# context menu name? (string)
 IDE_NAME = '__IDE_NAME__'
 
-# always create new window?
-NEWWINDOW = False
+# new window support (boolean)
+NEW_WINDOW_SUPPORT = __NEW_WINDOW_SUPPORT__
+
+# new window argument (string)
+NEW_WINDOW_ARG = '__NEW_WINDOW_ARG__'
+
+# always create new window? (boolean)
+NEW_WINDOW_ALWAYS = __NEW_WINDOW_ALWAYS__
+
 
 
 class __IDE_NAME__Extension(GObject.GObject, Nautilus.MenuProvider):
@@ -30,12 +37,13 @@ class __IDE_NAME__Extension(GObject.GObject, Nautilus.MenuProvider):
             safepaths += '"' + filepath + '" '
 
             # If one of the files we are trying to open is a folder
+            # and IDE support new-window argument
             # create a new instance of ide
-            if os.path.isdir(filepath) and os.path.exists(filepath):
-                args = '--new-window '
+            if NEW_WINDOW_SUPPORT and os.path.isdir(filepath) and os.path.exists(filepath):
+                args = NEW_WINDOW_ARG
 
-        if NEWWINDOW:
-            args = '--new-window '
+        if NEW_WINDOW_ALWAYS:
+            args = NEW_WINDOW_ARG
 
         call(IDE_COMMAND + ' ' + args + safepaths + '&', shell=True)
 
