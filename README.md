@@ -4,49 +4,54 @@
 
 ## 🚀 Description
 
-This repository contains Nautilus extensions to add context menu support for various IDEs, allowing you to open files and folders directly from your file explorer.
+This repository provides a universal Nautilus extension generator to add "Open with..." context menu support for **any** IDE or text editor, allowing you to open files and folders directly from your file explorer.
 
-Supported IDEs:
-- **Antigravity** (`antigravity`)
-- **VS Code** (`code`)
-- **Cursor** (`cursor`)
-- **Windsurf** (`windsurf`)
+### Supported IDEs:
+- **Out-of-the-box presets:** VS Code (`code`), Cursor (`cursor`), Windsurf (`windsurf`), and Antigravity (`antigravity`).
+- **Universal Support:** A `[custom]` option allows you to generate extensions for *any* other tool (e.g., Neovim, Zed, Sublime Text) by defining your own binary command and window arguments interactively!
 
 This repository is based on the excellent work from [code-nautilus](https://github.com/harry-cpp/code-nautilus) by harry-cpp.
 
 ## 🎯 Features
 
-- Right-click to open files in your favorite IDE
-- Open entire folders
-- Clean and modern integration with Nautilus
+- Right-click to open files in your favorite IDE.
+- Open entire folders directly from the context menu.
+- **Dynamic Template Engine:** Automatically configures your extension based on your IDE's specific arguments (like `--new-window` support).
+- **Atomic Installation:** Safe and robust installation process that prevents corrupted states.
+- Clean and modern integration with Nautilus.
 
-## 🛠️ Installation
+## 🛠️ Installation / Update
 
-Run the following command and select your IDE from the menu:
+Clone this repository and run the interactive installation script:
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/RodrigoSaka/nautilus-ides/main/install.sh | bash
+git clone https://github.com/RodrigoSaka/nautilus-ides.git
+cd nautilus-ides
+./install.sh
+
 ```
 
 ## 🗑️ Uninstallation
 
-To uninstall, run the following command and select the IDE to remove:
+To remove an extension, simply run the uninstaller from the cloned directory:
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/RodrigoSaka/nautilus-ides/main/uninstall.sh | bash
+cd nautilus-ides
+./uninstall.sh
+
 ```
 
 ## 📦 Requirements
 
-- Python Nautilus
-- Your chosen IDE
-- Nautilus file manager
+* Python Nautilus (`python-nautilus` package)
+* Your chosen IDE
+* Nautilus file manager
 
 ## 📝 Usage
 
 1. Right-click on any file to open it in the IDE
 2. Right-click on a folder to open it in the IDE
-3. Or right-click on empty space in a folder to open that folder in the IDE
+3. Or right-click on empty space inside a folder to open that directory in your IDE
 
 ## 🤝 Contributing
 
@@ -58,4 +63,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Author
 
-Created and maintained by Rodrigo Sakaguchi
+Created and maintained by Rodrigo Sakaguchi.
