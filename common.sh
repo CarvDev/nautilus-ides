@@ -70,8 +70,13 @@ get_ide_setup () {
         answer="${answer^}"
         
         if [ "$answer" = "Y" ]; then
-            read -p "Enter the [new-window] argument of your IDE (e.g. --new-window): " answer
-            NEW_WINDOW_ARG="$answer "
+            read -p "Enter the [new-window] argument of your IDE (default: --new-window): " answer
+            
+            if [ -n "$answer" ]; then
+                NEW_WINDOW_ARG="$answer "
+            else
+                NEW_WINDOW_ARG="--new-window "
+            fi
         else
             NEW_WINDOW_ARG=""
             return 0
