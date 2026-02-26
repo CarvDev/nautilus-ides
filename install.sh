@@ -2,9 +2,11 @@
 
 source "$(dirname "$0")/common.sh"
 
+check_root
+
 get_ide_selection "Select an IDE to install:"
 
-check_root
+get_ide_name $IDE
 
 echo -e "${GREEN}Selected IDE: $IDE${NC}"
 echo ""
@@ -18,22 +20,26 @@ else
 fi
 echo ""
 
-# Remove previous version and setup folder
-echo -e "${BLUE}Removing previous version (if found)...${NC}"
+# Create nautilus extension folder if it doesn't exists
 mkdir -p ~/.local/share/nautilus-python/extensions
-rm -f ~/.local/share/nautilus-python/extensions/$SCRIPT_NAME
-echo ""
 
 # Download and install the extension
 echo -e "${BLUE}Downloading newest version for $IDE...${NC}"
 # Verify if the installation was successful
-if wget -q -O ~/.local/share/nautilus-python/extensions/$SCRIPT_NAME https://raw.githubusercontent.com/RodrigoSaka/nautilus-ides/main/scripts/$SCRIPT_NAME ; then
+if wget -q -O /tmp/$SCRIPT_NAME https://raw.githubusercontent.com/RodrigoSaka/nautilus-ides/main/scripts/ide-nautilus-template.py ; then
     echo -e "${GREEN}Download completed successfully.${NC}"
 else
     echo -e "${RED}Download failed.${NC}"
     exit 1
 fi
 echo ""
+
+# Replacing IDE name and command on the script 
+sed -i "s/__IDE_COMMAND__/$IDE/g" /tmp/$SCRIPT_NAME
+sed -i "s/__IDE_NAME__/$IDE_NAME/g" /tmp/$SCRIPT_NAME
+
+# Move recent built script to nautilus extensions directory
+mv /tmp/$SCRIPT_NAME ~/.local/share/nautilus-python/extensions/$SCRIPT_NAME
 
 # Restart nautilus
 echo -e "${BLUE}Restarting nautilus...${NC}"
