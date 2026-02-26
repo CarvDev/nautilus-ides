@@ -39,7 +39,7 @@ if [ -n "$NEW_WINDOW_ARG" ]; then
     sed -i "s/__NEW_WINDOW_ARG__/$NEW_WINDOW_ARG/g" /tmp/$SCRIPT_NAME
 else 
     sed -i "s/__NEW_WINDOW_SUPPORT__/False/g" /tmp/$SCRIPT_NAME
-    sed -i "s/__NEW_WINDOW_ARG__/''/g" /tmp/$SCRIPT_NAME
+    sed -i "s/__NEW_WINDOW_ARG__//g" /tmp/$SCRIPT_NAME
 fi
 
 # Setting up new-window always
