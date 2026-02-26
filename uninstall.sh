@@ -2,6 +2,8 @@
 
 source "$(dirname "$0")/common.sh"
 
+check_root
+
 get_ide_selection "Select an IDE to uninstall:"
 
 echo -e "${GREEN}Selected IDE to uninstall: $IDE${NC}"
