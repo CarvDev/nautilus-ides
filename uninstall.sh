@@ -1,6 +1,34 @@
 #!/bin/bash
 
-source "$(dirname "$0")/common.sh"
+REPO_RAW_BASE="https://raw.githubusercontent.com/RodrigoSaka/nautilus-ides/main"
+
+load_common() {
+    local script_dir common_path
+
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd 2>/dev/null)"
+    common_path="${script_dir}/common.sh"
+
+    if [ -f "$common_path" ]; then
+        # shellcheck source=./common.sh
+        source "$common_path"
+        return
+    fi
+
+    if command -v curl > /dev/null 2>&1; then
+        source /dev/stdin <<< "$(curl -fsSL "${REPO_RAW_BASE}/common.sh")"
+        return
+    fi
+
+    if command -v wget > /dev/null 2>&1; then
+        source /dev/stdin <<< "$(wget -qO- "${REPO_RAW_BASE}/common.sh")"
+        return
+    fi
+
+    echo "Failed to load common.sh. Install curl or wget, or run from a local checkout."
+    exit 1
+}
+
+load_common
 
 get_ide_selection "Select an IDE to uninstall:"
 

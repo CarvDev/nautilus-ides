@@ -1,6 +1,35 @@
 #!/bin/bash
 
-source "$(dirname "$0")/common.sh"
+REPO_RAW_BASE="https://raw.githubusercontent.com/RodrigoSaka/nautilus-ides/main"
+
+load_common() {
+    local script_dir common_path
+
+    script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd 2>/dev/null)"
+    common_path="${script_dir}/common.sh"
+
+    if [ -f "$common_path" ]; then
+        # shellcheck source=./common.sh
+        source "$common_path"
+        return
+    fi
+
+    if command -v curl > /dev/null 2>&1; then
+        # Support execution via: wget/curl .../install.sh | bash
+        source /dev/stdin <<< "$(curl -fsSL "${REPO_RAW_BASE}/common.sh")"
+        return
+    fi
+
+    if command -v wget > /dev/null 2>&1; then
+        source /dev/stdin <<< "$(wget -qO- "${REPO_RAW_BASE}/common.sh")"
+        return
+    fi
+
+    echo "Failed to load common.sh. Install curl or wget, or run from a local checkout."
+    exit 1
+}
+
+load_common
 
 get_ide_selection "Select an IDE to install:"
 
@@ -54,12 +83,19 @@ echo ""
 # Remove previous version and setup folder
 echo -e "${BLUE}Removing previous version (if found)...${NC}"
 mkdir -p ~/.local/share/nautilus-python/extensions
-rm -f ~/.local/share/nautilus-python/extensions/$SCRIPT_NAME
+rm -f "$HOME/.local/share/nautilus-python/extensions/$SCRIPT_NAME"
 echo ""
 
 # Download and install the extension
 echo -e "${BLUE}Downloading newest version for $IDE...${NC}"
-wget -q -O ~/.local/share/nautilus-python/extensions/$SCRIPT_NAME https://raw.githubusercontent.com/RodrigoSaka/nautilus-ides/main/scripts/$SCRIPT_NAME
+if command -v curl > /dev/null 2>&1; then
+    curl -fsSL "${REPO_RAW_BASE}/scripts/${SCRIPT_NAME}" -o "$HOME/.local/share/nautilus-python/extensions/$SCRIPT_NAME"
+elif command -v wget > /dev/null 2>&1; then
+    wget -q -O "$HOME/.local/share/nautilus-python/extensions/$SCRIPT_NAME" "${REPO_RAW_BASE}/scripts/${SCRIPT_NAME}"
+else
+    echo -e "${RED}Failed to download ${SCRIPT_NAME}. Install curl or wget and try again.${NC}"
+    exit 1
+fi
 echo ""
 
 # Restart nautilus
