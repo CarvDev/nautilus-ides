@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 REPO_RAW_BASE="https://raw.githubusercontent.com/RodrigoSaka/nautilus-ides/main"
 
@@ -37,24 +38,25 @@ load_common() {
 
 load_common
 
-get_ide_selection "Select an IDE to uninstall:"
+get_installed_ide_selection "Select an IDE to uninstall:"
 
-echo -e "${GREEN}Selected IDE to uninstall: $IDE${NC}"
+print_success "Selected IDE to uninstall: $IDE_LABEL"
 echo ""
 
-# Remove the extension
-echo -e "${BLUE}Removing $SCRIPT_NAME...${NC}"
-if [ -f ~/.local/share/nautilus-python/extensions/$SCRIPT_NAME ]; then
-    rm -f ~/.local/share/nautilus-python/extensions/$SCRIPT_NAME
-    echo -e "${GREEN}Successfully removed $SCRIPT_NAME${NC}"
+SCRIPT_NAME="$(get_installed_script_name "$IDE")"
+if [ -z "$SCRIPT_NAME" ]; then
+    SCRIPT_NAME="$(get_extension_script_name "$IDE")"
+fi
+
+print_info "Removing ${SCRIPT_NAME}..."
+if [ -f "${EXTENSIONS_DIR}/${SCRIPT_NAME}" ]; then
+    rm -f "${EXTENSIONS_DIR}/${SCRIPT_NAME}"
+    unregister_installed_ide "$IDE"
+    print_success "Successfully removed ${IDE_LABEL}"
 else
-    echo -e "${YELLOW}$SCRIPT_NAME not found in ~/.local/share/nautilus-python/extensions/${NC}"
+    print_warning "${SCRIPT_NAME} not found in ${EXTENSIONS_DIR}"
 fi
 echo ""
 
-# Restart nautilus
-echo -e "${BLUE}Restarting nautilus...${NC}"
-nautilus -q > /dev/null 2>&1
-echo ""
-
-echo -e "${GREEN}Uninstallation Complete for $IDE${NC}"
+restart_nautilus
+print_success "Uninstallation Complete for $IDE_LABEL"

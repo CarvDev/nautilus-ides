@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 REPO_RAW_BASE="https://raw.githubusercontent.com/RodrigoSaka/nautilus-ides/main"
 
@@ -38,76 +39,22 @@ load_common() {
 
 load_common
 
-get_ide_selection "Select an IDE to install:"
+get_available_ide_selection "Select an IDE to install:"
 
-echo -e "${GREEN}Selected IDE: $IDE${NC}"
+print_success "Selected IDE: $IDE_LABEL"
 echo ""
 
-# Install python-nautilus
-echo -e "${BLUE}Installing python-nautilus...${NC}"
-if type "pacman" > /dev/null 2>&1
-then
-    # check if already install, else install
-    pacman -Qi python-nautilus &> /dev/null
-    if [ `echo $?` -eq 1 ]
-    then
-        sudo pacman -S --noconfirm python-nautilus
-    else
-        echo -e "${GREEN}python-nautilus is already installed${NC}"
-    fi
-elif type "apt-get" > /dev/null 2>&1
-then
-    # Find Ubuntu python-nautilus package
-    package_name="python-nautilus"
-    found_package=$(apt-cache search --names-only $package_name)
-    if [ -z "$found_package" ]
-    then
-        package_name="python3-nautilus"
-    fi
+install_python_nautilus
 
-    # Check if the package needs to be installed and install it
-    installed=$(apt list --installed $package_name -qq 2> /dev/null)
-    if [ -z "$installed" ]
-    then
-        sudo apt-get install -y $package_name
-    else
-        echo -e "${GREEN}$package_name is already installed.${NC}"
-    fi
-elif type "dnf" > /dev/null 2>&1
-then
-    installed=`dnf list --installed nautilus-python 2> /dev/null`
-    if [ -z "$installed" ]
-    then
-        sudo dnf install -y nautilus-python
-    else
-        echo -e "${GREEN}nautilus-python is already installed.${NC}"
-    fi
-else
-    echo -e "${RED}Failed to find python-nautilus, please install it manually.${NC}"
-fi
+SCRIPT_NAME="$(get_extension_script_name "$IDE")"
+IDE_RECORD="$(get_ide_record "$IDE")" || fail "Failed to resolve IDE ${IDE}."
+
+IFS='|' read -r IDE_ID IDE_LABEL IDE_COMMAND IDE_NEW_WINDOW <<< "$IDE_RECORD"
+print_info "Installing generic Nautilus extension for ${IDE_LABEL}..."
+TEMPLATE_CONTENT="$(render_extension_template "$IDE_ID" "$IDE_LABEL" "$IDE_COMMAND" "$IDE_NEW_WINDOW")"
+write_extension_file "$SCRIPT_NAME" "$TEMPLATE_CONTENT"
+register_installed_ide "$IDE_ID" "$IDE_LABEL" "$SCRIPT_NAME"
 echo ""
 
-# Remove previous version and setup folder
-echo -e "${BLUE}Removing previous version (if found)...${NC}"
-mkdir -p ~/.local/share/nautilus-python/extensions
-rm -f "$HOME/.local/share/nautilus-python/extensions/$SCRIPT_NAME"
-echo ""
-
-# Download and install the extension
-echo -e "${BLUE}Downloading newest version for $IDE...${NC}"
-if command -v curl > /dev/null 2>&1; then
-    curl -fsSL "${REPO_RAW_BASE}/scripts/${SCRIPT_NAME}" -o "$HOME/.local/share/nautilus-python/extensions/$SCRIPT_NAME"
-elif command -v wget > /dev/null 2>&1; then
-    wget -q -O "$HOME/.local/share/nautilus-python/extensions/$SCRIPT_NAME" "${REPO_RAW_BASE}/scripts/${SCRIPT_NAME}"
-else
-    echo -e "${RED}Failed to download ${SCRIPT_NAME}. Install curl or wget and try again.${NC}"
-    exit 1
-fi
-echo ""
-
-# Restart nautilus
-echo -e "${BLUE}Restarting nautilus...${NC}"
-nautilus -q > /dev/null 2>&1
-echo ""
-
-echo -e "${GREEN}Installation Complete for $IDE${NC}"
+restart_nautilus
+print_success "Installation Complete for ${IDE_LABEL}"
